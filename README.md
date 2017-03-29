@@ -20,7 +20,7 @@ Well, if so, this generator is exactly what you are looking for.
 
 # Building
 
-Download the repository or "git clone https://github.com/jytou/vanitygen/vanitygen.git".
+Download the repository or "git clone https://github.com/jytou/vanitygen.git".
 Check the Makefile and uncomment/comment what is right for your system.
 
 To check whether your CPU supports SSE or not, here are a few hints:
