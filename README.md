@@ -45,6 +45,7 @@ And of course, if you can run it on several machines at the same time, you are m
 If you're uncomfortable with statistics, you can just try out "easy" regex, such as "^bad" and see how long it takes to get a result. You can then iteratively make more complex searches.
 
 # Usage
+
 Usage: [-s][-n min max][-w wordfile [-f filler_type][-c]] regexfile
 
 	-n min max (optional): minimum and maximum number of characters/words to use to generate passwords.
@@ -55,19 +56,19 @@ Usage: [-s][-n min max][-w wordfile [-f filler_type][-c]] regexfile
 	regexfile (required): a file containing a list of regex (one per line). Lines beginning by a tab are ignored.
 
 Regex examples:
-	Public Key starting with "duniter" not case sensitive: "^[Dd][Uu][Nn][Ii][Tt][Ee][rR]"
-	Public Key containing "Duniter" case sensitive: "Duniter"
-	Public Key ending with "Freedom" (including hacker style :p ): "[fF][rR][eE3][eE3][dD][oO0][mM]$"
+    Public Key starting with "duniter" not case sensitive: "^[Dd][Uu][Nn][Ii][Tt][Ee][rR]"
+    Public Key containing "Duniter" case sensitive: "Duniter"
+    Public Key ending with "Freedom" (including hacker style :p ): "[fF][rR][eE3][eE3][dD][oO0][mM]$"
 
 Usage examples:
-	Basic with regex: regex.txt
-		Example of generated password/salt: "q,d/dQ[i6-?_w$,#I/yu"
+    Basic with regex: regex.txt
+        Example of generated password/salt: "q,d/dQ[i6-?_w$,#I/yu"
 
-	Generate with a word file, using from 6 to 10 words, capitalized: -w words.txt -n 6 10 -c regex.txt
-		Example of generated password/salt: "Apple Factory Jump Music Truck Buddha Movie Fountain"
+    Generate with a word file, using from 6 to 10 words, capitalized: -w words.txt -n 6 10 -c regex.txt
+        Example of generated password/salt: "Apple Factory Jump Music Truck Buddha Movie Fountain"
 
-	Generate with a word file, using random and numeric characters as separators: -w words.txt -f 1 regex.txt
-		Example of generated password/salt: "apple!factory5jump;music-truck9buddha<movie(fountain"
+    Generate with a word file, using random and numeric characters as separators: -w words.txt -f 1 regex.txt
+        Example of generated password/salt: "apple!factory5jump;music-truck9buddha<movie(fountain"
 
 # Copyrights
 
