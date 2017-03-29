@@ -2,7 +2,14 @@ Purpose: Generates Duniter vanity adresses
 
 # Introduction
 
-This program enables to search for public addresses that contain a certain form of pattern and gives you the password and salt needed to connect to these addresses. Haven't you ever dreamed of having an address in the form: JohnDoe49R1PivbbQCsfyJrAUDZJTqfnQHqJm2E89Vc. What about MyCompanySrb7tfj3buJUQbL7xTSWi5JnGYwmC6Qpes?
+This program enables to search for public addresses that contain a certain form of pattern and gives you the password and salt needed to connect to these addresses. Haven't you ever dreamed of having an address in the form:
+
+    JohnDoe49R1PivbbQCsfyJrAUDZJTqfnQHqJm2E89Vc
+
+What about
+
+    MyCompanySrb7tfj3buJUQbL7xTSWi5JnGYwmC6Qpes
+
 Well, if so, this generator is exactly what you are looking for.
 
 # Requirements
@@ -56,11 +63,13 @@ Usage: [-s][-n min max][-w wordfile [-f filler_type][-c]] regexfile
 	regexfile (required): a file containing a list of regex (one per line). Lines beginning by a tab are ignored.
 
 Regex examples:
+
     Public Key starting with "duniter" not case sensitive: "^[Dd][Uu][Nn][Ii][Tt][Ee][rR]"
     Public Key containing "Duniter" case sensitive: "Duniter"
     Public Key ending with "Freedom" (including hacker style :p ): "[fF][rR][eE3][eE3][dD][oO0][mM]$"
 
 Usage examples:
+
     Basic with regex: regex.txt
         Example of generated password/salt: "q,d/dQ[i6-?_w$,#I/yu"
 
