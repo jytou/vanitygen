@@ -1,3 +1,5 @@
+([English version](http://github.com/jytou/vanitygen/blob/master/README_fr.md))
+
 But: génère des adresses Duniter « vanité »
 
 # Introduction
