@@ -6,7 +6,7 @@ SSE=-DUSE_SSE
 
 default: all
 
-all: vanitygen
+all: vanity_scrypt.c
 	gcc -O3 $(SYSTEM) $(SSE) vanity_scrypt.c -o vanitygen -lpthread
 
 clean:
