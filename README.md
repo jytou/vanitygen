@@ -16,7 +16,7 @@ Well, if so, this generator is exactly what you are looking for.
 
 # Warning
 
-Be aware that if you run this utility on any machine you don't have fully control on, someone could be spying on you and thus get the generated password and salt. Run this **only** on environments you fully trust!
+Be aware that if you run this utility on any machine you don't have fully control on, someone could be spying on you and thus get the generated password and salt. Run this **only** on environments you fully trust! Ideally, this should be run on a live CD after disconnecting the internet, and write down everything on paper.
 
 # Requirements
 
@@ -49,7 +49,9 @@ The program searches for regular expressions (regex) that you provide. The regex
 
 On a decent machine, you can expect to search for 200 addresses per second. If you generate from seeds, you can reach 50k addresses per second, but you won't be able to log into Duniter clients, except Silkaj at the moment. This is very slow. So if the percentage of finding your regex is, say, 0.000001%, you would be ready to wait at least a month to get a result. That's a long time. So before thinking about what regex you want to search for, it is wise to get an estimate of the complexity of the search. You don't want to search for something if it will take 500 years to find it.
 
-Public addresses are using 58 different characters. So, if you search for a word of 5 letters (case sensitive) at the beginning of the string, the probability of finding one is: (1/58)^5=.000000002. Which, at 200 keys a second, gives you roughly a 20 days time frame to find what you want. If you don't require it to be at the beginning of the key, then you multiply by the length of the string minus 5 (keys are 43 characters in length), which is roughly a day. But then your "beautiful string" may be in the very middle of the key, and people will not notice it.
+Public addresses are using 62 different characters. So, if you search for a word of 5 letters (case sensitive) at the beginning of the string, the probability of finding one is: (1/62)^5=.000000001. Which, at 200 keys a second, gives you roughly a 50 days time frame to find what you want. If you don't require it to be at the beginning of the key, then you multiply by the length of the string minus 5 (keys are 43 characters in length), which is less than a day. But then your "beautiful string" may be in the very middle of the key, and people will not notice it.
+
+In reality, things are a little more complex since characters are not used in a uniform distribution (try searching for "^a" and "^A"), but it gives some rough estimates of the time you'll have to wait before getting a result.
 
 You can also get better odds by allowing non case sensitive matches, and even "hacker-style" characters (1 for l, 3 for E, etc.).
 
@@ -59,12 +61,14 @@ If you're uncomfortable with statistics, you can just try out "easy" regex, such
 
 # Usage
 
-Usage: [-s][-n min max][-w wordfile [-f filler_type][-c]] regexfile
+Usage: [-s][-n min max][-r|-R resultfile][-w wordfile [-f filler_type][-c]] regexfile
 
 	-n min max (optional): minimum and maximum number of characters/words to use to generate passwords.
 	-w wordfile (optional): generate passwords/salt using a list of words contained in the file "wordfile", rather than simply random characters.
 		-f type (optional) filler type between words: 0=spaces (default), 1=special characters and numbers, 2=none.
-		-c (optional): capitalize words (non capitalized by default - you can also capitalize the words in the given file).
+		-c (optional): capitalize the first character of words (non capitalized by default - you can also capitalize the words in the given file).
+	-r resultfile (optional): a file to which the results should be written to.
+	-R resultfile (optional): same as -r, but do not show the results found on the standard output.
 	-s (optional): Do not generate password/salt, but only a seed (!!!WARNING!!! You will not be able to connect with Sakia or Cesium with this).
 	regexfile (required): a file containing a list of regex (one per line). Lines beginning by a tab are ignored.
 

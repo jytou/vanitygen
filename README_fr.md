@@ -16,7 +16,7 @@ Si c'est le cas, alors ce générateur est exactement ce qu'il vous faut!
 
 # Avertissement
 
-Si vous faites tourner cet utilitaire sur une machine dont vous n'avez pas le contrôle total, quelqu'un pourrait espionner votre terminal et s'emparer des mots de passe et sel générés. N'utilisez ce logiciel **que** sur des environnements dont vous êtes sûrs à 100%!
+Si vous faites tourner cet utilitaire sur une machine dont vous n'avez pas le contrôle total, quelqu'un pourrait espionner votre terminal et s'emparer des mots de passe et sel générés. N'utilisez ce logiciel **que** sur des environnements dont vous êtes sûrs à 100%! Idéalement, vous devriez utiliser ceci sur un live CD (cédérom autonome) déconnecté de l'internet et noter les résultats sur un papier.
 # Prérequis
 
 - Un compilateur gcc, éventuellement l'outil make. Aucune librairie n'est nécessaire.
@@ -48,7 +48,9 @@ Le programme cherche en fonction des expressions régulières (regex en anglais)
 
 Sur une machine correcte, vous pouvez espérer atteindre 200 addresses par seconde. Si vous générez des clés à partir d'un noyau, vous pouvez atteindre 50k addresses par seconde, mais vous ne pourrez pas vous logger dans les clients classiques duniter (Cesium et Sakia), seul Silkaj (en ligne de commande) le supporte pour le moment. C'est dans tous les cas très lent. Si le pourcentage de chances de trouver une clé correspondant à votre expression régulière est de 0,000001%, vous devriez être prêt à attendre au moins un mois. C'est long. Alors, avant de vous jeter sur des expressions régulières, il est sage d'estimer le temps moyen pour trouver une adresse correspondante. Inutile de chercher une expression régulière s'il faut attendre 500 ans pour avoir un résultat.
 
-Les adresses publiques utilisent 58 caractères différents. Alors, si vous cherchez un mot de 5 lettres (sensible à la casse) au tout début de la chaîne, la probabilité d'en trouver une est de : (1/58)^5=0,000000002. Ce qui fait, à 200 clés par seconde, un temps de recherche moyen de 20 jours. Si en revanche, vous cherchez votre chaîne n'importe où dans la clé publique, alors vous multipliez vos chances par la taille de la clé moins 5 (les clés font 43 caractères), ce qui ramène à peu près à un jour de recherche. Mais dans ce cas, votre magnifique nom ou expression risque d'être noyé en plein milieu de la clé, et ne sera pas visible.
+Les adresses publiques utilisent 62 caractères différents. Alors, si vous cherchez un mot de 5 lettres (sensible à la casse) au tout début de la chaîne, la probabilité d'en trouver une est de : (1/62)^5=0,000000001. Ce qui fait, à 200 clés par seconde, un temps de recherche moyen d'environ 50 jours. Si en revanche, vous cherchez votre chaîne n'importe où dans la clé publique, alors vous multipliez vos chances par la taille de la clé moins 5 (les clés font 43 caractères), ce qui ramène à moins d'un jour de recherche. Mais dans ce cas, votre magnifique nom ou expression risque d'être noyé en plein milieu de la clé, et ne sera pas visible.
+
+Dans la réalité c'est un peu plus complexe car les caractères ne sont pas utilisés uniformément (recherchez "^a" et "^A" par exemple) mais cela donne déjà un bon ordre de grandeur de la durée qu'il faudra attendre avant d'avoir un résultat.
 
 Vous pouvez aussi améliorer vos chances (et donc raccourcir statistiquement le temps de recherche) en recherchant sans être sensible à la casse, voire même en utilisant le style « hackeur » (1 pour l, 3 pour E, etc.).
 
@@ -58,12 +60,14 @@ Si vous n'êtes pas à l'aise avec les statistiques, vous pouvez commencer par r
 
 # Usage
 
-Usage: [-s][-n min max][-w fichiermots [-f typeremplissage][-c]] fichierexpressions
+Usage: [-s][-n min max][-r|-R fichierresultat][-w fichiermots [-f typeremplissage][-c]] fichierexpressions
 
 	-n min max (optionnel): nombre minimum et maximum de caractères/mots à utiliser pour générer des mots de passe.
 	-w fichiermots (optionnel): générer des mots de passe/sel avec une liste de mots contenue dans le fichier « fichiermots », plutôt que générer à partir de caractères aléatoires.
 		-f typeremplissage (optionnel) type de remplissage entre les mots: 0=espaces (défaut), 1=caractères spéciaux et chiffres, 2=aucun.
 		-c (optionnel): met en majuscule le premier caractère de chaque mot (vous pouvez aussi mettre des mots avec majuscules dans le fichier de mots).
+	-r fichierresultat (optionnel): fichier dans lequel doivent être enregistrés les résultats.
+	-R fichierresultat (optionnel): même chose que -r, mais sans montrer les résultats sur la sortie standard.
 	-s (optionnel): Générer uniquement à partir d'un noyau, sans mot de passe/sel (!!!ATTENTION!!! Vous ne pourrez pas vous logger dans Sakia ou Cesium avec un noyau).
 	fichierexpressions (requis): un fichier contenant une liste d'expressions régulières (une par ligne). Les lignes commençant par une tabulation sont ignorées.
 

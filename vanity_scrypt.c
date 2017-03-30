@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <ctype.h>
+#include <time.h>
 
 /*************************************************************/
 /********************TRANSFORM SEED TO PK/SK *****************/
@@ -4093,6 +4094,8 @@ unsigned char ** thread_signals;
 int nb_threads = 0;
 // Nb of explored combinations
 int nb_explored = 0;
+// Nb found
+int nb_found = 0;
 // To make sure we don't write in "nb_explored" simultaneously
 pthread_mutex_t mutex_lock_explored;
 // To make sure we don't write on stdout simultaneously
@@ -4114,6 +4117,11 @@ int maxWordsSalt = 10;
 #define BETWEEN_SPACES 0
 #define BETWEEN_SPECIAL 1
 #define BETWEEN_NONE 2
+
+// The file to which results should be written to. If null, only write to stdout
+FILE * resultfile;
+// Show to stdout. If this is 0, then only a "found" will be shown (with a timestamp).
+char resultStdout = 1;
 
 int betweenWords = BETWEEN_SPACES;
 // If 0 no capitalizing, if 1 capitalize all words
@@ -4168,6 +4176,24 @@ int generateSentence(int minWords, int maxWords, char * result)
 	}
 	result[pos++] = 0;
 	return pos;
+}
+
+// Shows the current time, along with statistics on number of keys found vs searched
+void showTimeAndDateFound()
+{
+	time_t timer;
+	char buffer[26];
+	struct tm* tm_info;
+
+	time(&timer);
+	tm_info = localtime(&timer);
+
+	strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+
+	pthread_mutex_lock(&mutex_lock_explored);
+	int explored = nb_explored;
+	pthread_mutex_unlock(&mutex_lock_explored);
+	fprintf(stdout, "\r%s - %d found %d tried, %f %% total\n", buffer, nb_found, explored, (100.0 * nb_found) / explored);
 }
 
 // Find some nice public keys. Stop the process when "active" becomes false
@@ -4244,7 +4270,6 @@ void findSome(unsigned char *active)
 			if (!reti)
 			{
 				// One match found!
-
 				// Transform pk/sk into hex for humans - not really needed but keeping it in case
 //				char hexsk[crypto_sign_ed25519_SECRETKEYBYTES * 2 + 1];
 //				sodium_bin2hex(hexsk, crypto_sign_ed25519_SECRETKEYBYTES * 2 + 1, sk, crypto_sign_ed25519_SECRETKEYBYTES);
@@ -4253,16 +4278,32 @@ void findSome(unsigned char *active)
 
 				// Make sure we don't write at the same time than someone else
 				pthread_mutex_lock(&mutex_lock_stdout);
+				nb_found++;
+
 				if (generatePwdSalt)
-					fprintf(stdout, "\r\"%s\" \"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, pass, salt);
+				{
+					if (resultStdout == 1)
+						fprintf(stdout, "\r\"%s\" \"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, pass, salt);
+					else
+						showTimeAndDateFound();
+					if (resultfile != NULL)
+						fprintf(resultfile, "\"%s\" \"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, pass, salt);
+				}
 				else
 				{
 					// Need to transform the seed to hex for readability
 					char hexseed[SEED_SIZE * 2 + 1];
 					sodium_bin2hex(hexseed, sizeof hexseed, seed, SEED_SIZE);
-					fprintf(stdout, "\r\"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, hexseed);
+					if (resultStdout == 1)
+						fprintf(stdout, "\r\"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, hexseed);
+					else
+						showTimeAndDateFound();
+					if (resultfile != NULL)
+						fprintf(resultfile, "\"%s\" \"%s\" \"%s\"\n", allregexs[i], b58pk, hexseed);
 				}
 				fflush(stdout);
+				if (resultfile != NULL)
+					fflush(resultfile);
 				// Release stdout for others
 				pthread_mutex_unlock(&mutex_lock_stdout);
 			}
@@ -4444,12 +4485,14 @@ void remove_thread()
 
 void usage()
 {
-	fprintf(stdout, "Usage: [-s][-n min max][-w wordfile [-f filler_type][-c]] regexfile\n\n");
+	fprintf(stdout, "Usage: [-s][-n min max][-r|-R resultfile][-w wordfile [-f filler_type][-c]] regexfile\n\n");
 	fprintf(stdout, "\t-n min max (optional): minimum and maximum number of characters/words to use to generate passwords.\n");
 	fprintf(stdout, "\t-w wordfile (optional): generate passwords/salt using a list of words contained in the file \"wordfile\", rather than simply random characters.\n");
 	fprintf(stdout, "\t\t-f type (optional) filler type between words: 0=spaces (default), 1=special characters and numbers, 2=none.\n");
 	fprintf(stdout, "\t\t-c (optional): capitalize words (non capitalized by default - you can also capitalize the words in the given file).\n");
 	fprintf(stdout, "\t-t threads (optional): start with \"threads\" parallel threads (the default is half the number of cores found).\n");
+	fprintf(stdout, "\t-r resultfile (optional): a file to which the results should be written to.\n");
+	fprintf(stdout, "\t-R resultfile (optional): same as -r, but do not show the results found on the standard output.\n");
 	fprintf(stdout, "\t-s (optional): Do not generate password/salt, but only a seed (!!!WARNING!!! You will not be able to connect with Sakia or Cesium with this).\n");
 	fprintf(stdout, "\tregexfile (required): a file containing a list of regex (one per line). Lines beginning by a tab are ignored.\n");
 	fprintf(stdout, "\nRegex examples:\n");
@@ -4614,6 +4657,28 @@ int main(int argc, char *argv[])
 			if (err == numberThreads)
 			{
 				fprintf(stderr, "Incorrect value for number of threads (should be an integer): \"%s\", exiting\n", numberThreads);
+				fflush(stderr);
+				usage();
+				exit(1);
+			}
+			curArg++;
+		}
+		else if ((strcmp("-r", argv[curArg]) == 0) || (strcmp("-R", argv[curArg]) == 0))
+		{
+			// No stdout if -R
+			if (strcmp("-R", argv[curArg]) == 0)
+				resultStdout = 0;
+
+			curArg++;
+			if (curArg == argc)
+				anotherArgumentWasExpected();
+
+			char * filename = argv[curArg];
+			// Open the file in append mode
+			resultfile = fopen(filename, "a");
+			if (resultfile == NULL)
+			{
+				fprintf(stderr, "Could not open file %s for writing, exiting\n", filename);
 				fflush(stderr);
 				usage();
 				exit(1);
@@ -4834,6 +4899,14 @@ int main(int argc, char *argv[])
 			}
 		}
 	} while (1);
+
+	if (resultfile != NULL)
+	{
+		pthread_mutex_lock(&mutex_lock_stdout);
+		fclose(resultfile);
+		resultfile = NULL;
+		pthread_mutex_unlock(&mutex_lock_stdout);
+	}
 
 	// Don't forget to release stdin otherwise the terminal will behave incorrectly
 	releaseStdin();
