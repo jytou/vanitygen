@@ -1,3 +1,5 @@
+([version française](http://github.com/jytou/vanitygen/blob/master/README_fr.md))
+
 Purpose: Generates Duniter vanity adresses
 
 # Introduction
