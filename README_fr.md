@@ -1,4 +1,4 @@
-([English version](http://github.com/jytou/vanitygen/blob/master/README_fr.md))
+([English version](http://github.com/jytou/vanitygen/blob/master/README.md))
 
 But: génère des adresses Duniter « vanité »
 
