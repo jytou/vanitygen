@@ -1,4 +1,4 @@
-([version française](https://github.com/jytou/vanitygen/README_fr.md))
+([version française](http://github.com/jytou/vanitygen/README_fr.md))
 
 Purpose: Generates Duniter vanity adresses
 
