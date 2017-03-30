@@ -12,6 +12,9 @@ ou bien
 
 Si c'est le cas, alors ce générateur est exactement ce qu'il vous faut!
 
+# Avertissement
+
+Si vous faites tourner cet utilitaire sur une machine dont vous n'avez pas le contrôle total, quelqu'un pourrait espionner votre terminal et s'emparer des mots de passe et sel générés. N'utilisez ce logiciel **que** sur des environnements dont vous êtes sûrs à 100%!
 # Prérequis
 
 - Un compilateur gcc, éventuellement l'outil make. Aucune librairie n'est nécessaire.

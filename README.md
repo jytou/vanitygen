@@ -12,6 +12,10 @@ What about
 
 Well, if so, this generator is exactly what you are looking for.
 
+# Warning
+
+Be aware that if you run this utility on any machine you don't have fully control on, someone could be spying on you and thus get the generated password and salt. Run this **only** on environments you fully trust!
+
 # Requirements
 
 - A gcc compiler, optionally make. No extra library needed.
