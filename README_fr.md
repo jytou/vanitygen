@@ -44,6 +44,8 @@ Il faut bien voir aussi que, au regard des opérations de bas niveau effectuées
 
 Le programme cherche en fonction des expressions régulières (regex en anglais) que vous fournissez. Les expressions régulières sont de type POSIX, et le programme se base sur les librairies standard système pour effectuer la recherche. Vous pouvez chercher autant d'expressions que vous le voulez et les insérer dans un fichier texte, une expression par ligne.
 
+**Attention** Les parenthèses ne semblent pas fonctionner dans les expressions régulières sur les systèmes testés. Testez-les sur des cas simples avant de les utiliser sur votre système !
+
 # Conseils sur la complexité des expressions régulières
 
 Sur une machine correcte, vous pouvez espérer atteindre 200 addresses par seconde. Si vous générez des clés à partir d'un noyau, vous pouvez atteindre 50k addresses par seconde, mais vous ne pourrez pas vous logger dans les clients classiques duniter (Cesium et Sakia), seul Silkaj (en ligne de commande) le supporte pour le moment. C'est dans tous les cas très lent. Si le pourcentage de chances de trouver une clé correspondant à votre expression régulière est de 0,000001%, vous devriez être prêt à attendre au moins un mois. C'est long. Alors, avant de vous jeter sur des expressions régulières, il est sage d'estimer le temps moyen pour trouver une adresse correspondante. Inutile de chercher une expression régulière s'il faut attendre 500 ans pour avoir un résultat.
