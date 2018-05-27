@@ -45,6 +45,8 @@ Note that since a lot of tricky low level operations (bit shifts, xors, etc.) ar
 
 The program searches for regular expressions (regex) that you provide. The regex are in the form of standard POSIX regex, and matched through standard regex library calls. You can search for as many regex as you want, and put them in a text file, one regex per line.
 
+**Warning** Parentheses don't seem to work in regex. Don't use them, or test them on simple searches before using them.
+
 # Guidance on the complexity of the regex
 
 On a decent machine, you can expect to search for 200 addresses per second. If you generate from seeds, you can reach 50k addresses per second, but you won't be able to log into Duniter clients, except Silkaj at the moment. This is very slow. So if the percentage of finding your regex is, say, 0.000001%, you would be ready to wait at least a month to get a result. That's a long time. So before thinking about what regex you want to search for, it is wise to get an estimate of the complexity of the search. You don't want to search for something if it will take 500 years to find it.
