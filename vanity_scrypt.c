@@ -4174,7 +4174,7 @@ int generateSentence(int minWords, int maxWords, char * result)
 			result[pos] = toupper(result[pos]);
 		pos += wordLen;
 	}
-	result[pos++] = 0;
+	result[pos] = 0;
 	return pos;
 }
 
@@ -4228,6 +4228,7 @@ void findSome(unsigned char *active)
 				pass_len = generateSentence(minWordsPwd, maxWordsPwd, pass);
 				salt_len = generateSentence(minWordsSalt, maxWordsSalt, salt);
 //				fprintf(stdout, "generated pass %s, length %d\n", pass, pass_len);
+//				fprintf(stdout, "generated salt %s, length %d\n", salt, salt_len);
 			}
 			else
 			{
